@@ -1,0 +1,684 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Seu Nome — Dev Portfolio</title>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #080c10;
+      --surface: #0e1419;
+      --border: #1a2332;
+      --accent: #00d4aa;
+      --accent2: #0066ff;
+      --text: #e8edf2;
+      --muted: #5a7080;
+      --card: #111820;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'DM Mono', monospace;
+      overflow-x: hidden;
+    }
+
+    /* GRID BACKGROUND */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(0,212,170,0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0,212,170,0.03) 1px, transparent 1px);
+      background-size: 40px 40px;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* NOISE OVERLAY */
+    body::after {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 0;
+      opacity: 0.4;
+    }
+
+    /* NAV */
+    nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 100;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1.2rem 3rem;
+      background: rgba(8, 12, 16, 0.85);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .nav-logo {
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      font-size: 1.1rem;
+      color: var(--accent);
+      letter-spacing: -0.02em;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 2rem;
+      list-style: none;
+    }
+
+    .nav-links a {
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 0.75rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      transition: color 0.2s;
+    }
+
+    .nav-links a:hover { color: var(--accent); }
+
+    /* SECTIONS */
+    section {
+      position: relative;
+      z-index: 1;
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 2rem;
+    }
+
+    /* HERO */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding-top: 80px;
+      max-width: 1100px;
+      margin: 0 auto;
+      padding-left: 2rem;
+      padding-right: 2rem;
+    }
+
+    .hero-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.7rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--accent);
+      border: 1px solid rgba(0,212,170,0.3);
+      padding: 0.4rem 1rem;
+      border-radius: 2px;
+      margin-bottom: 2rem;
+      opacity: 0;
+      animation: fadeUp 0.6s ease 0.2s forwards;
+    }
+
+    .hero-tag::before {
+      content: '';
+      width: 6px;
+      height: 6px;
+      background: var(--accent);
+      border-radius: 50%;
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.5; transform: scale(0.8); }
+    }
+
+    .hero h1 {
+      font-family: 'Syne', sans-serif;
+      font-size: clamp(3rem, 8vw, 6.5rem);
+      font-weight: 800;
+      line-height: 0.95;
+      letter-spacing: -0.03em;
+      margin-bottom: 1.5rem;
+      opacity: 0;
+      animation: fadeUp 0.6s ease 0.4s forwards;
+    }
+
+    .hero h1 .highlight {
+      color: transparent;
+      -webkit-text-stroke: 1px var(--accent);
+    }
+
+    .hero-desc {
+      max-width: 520px;
+      font-size: 0.9rem;
+      line-height: 1.8;
+      color: var(--muted);
+      margin-bottom: 2.5rem;
+      opacity: 0;
+      animation: fadeUp 0.6s ease 0.6s forwards;
+    }
+
+    .hero-cta {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+      opacity: 0;
+      animation: fadeUp 0.6s ease 0.8s forwards;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.8rem 1.8rem;
+      font-family: 'DM Mono', monospace;
+      font-size: 0.75rem;
+      letter-spacing: 0.08em;
+      text-decoration: none;
+      border-radius: 2px;
+      transition: all 0.2s;
+      cursor: pointer;
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      color: var(--bg);
+      font-weight: 500;
+    }
+
+    .btn-primary:hover {
+      background: #00ffcc;
+      transform: translateY(-2px);
+      box-shadow: 0 8px 30px rgba(0,212,170,0.3);
+    }
+
+    .btn-secondary {
+      background: transparent;
+      color: var(--text);
+      border: 1px solid var(--border);
+    }
+
+    .btn-secondary:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+      transform: translateY(-2px);
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ABOUT */
+    .about { padding: 8rem 2rem; }
+
+    .section-label {
+      font-size: 0.65rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 1rem;
+    }
+
+    .section-title {
+      font-family: 'Syne', sans-serif;
+      font-size: clamp(2rem, 4vw, 3rem);
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      margin-bottom: 2rem;
+      line-height: 1.1;
+    }
+
+    .about-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 4rem;
+      align-items: start;
+    }
+
+    .about-text p {
+      font-size: 0.88rem;
+      line-height: 1.9;
+      color: var(--muted);
+      margin-bottom: 1rem;
+    }
+
+    .about-text p span { color: var(--text); }
+
+    .about-stats {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+    }
+
+    .stat-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      padding: 1.5rem;
+      border-radius: 4px;
+      transition: border-color 0.2s;
+    }
+
+    .stat-card:hover { border-color: var(--accent); }
+
+    .stat-number {
+      font-family: 'Syne', sans-serif;
+      font-size: 2rem;
+      font-weight: 800;
+      color: var(--accent);
+      line-height: 1;
+      margin-bottom: 0.4rem;
+    }
+
+    .stat-label {
+      font-size: 0.7rem;
+      color: var(--muted);
+      letter-spacing: 0.05em;
+    }
+
+    /* SKILLS */
+    .skills { padding: 4rem 2rem 8rem; }
+
+    .skills-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 1rem;
+      margin-top: 3rem;
+    }
+
+    .skill-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      padding: 1.5rem;
+      border-radius: 4px;
+      transition: all 0.2s;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .skill-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, var(--accent), var(--accent2));
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 0.3s;
+    }
+
+    .skill-card:hover { border-color: rgba(0,212,170,0.3); transform: translateY(-4px); }
+    .skill-card:hover::before { transform: scaleX(1); }
+
+    .skill-icon {
+      font-size: 1.5rem;
+      margin-bottom: 0.8rem;
+    }
+
+    .skill-name {
+      font-family: 'Syne', sans-serif;
+      font-size: 1rem;
+      font-weight: 700;
+      margin-bottom: 0.4rem;
+    }
+
+    .skill-desc {
+      font-size: 0.72rem;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    /* PROJECTS */
+    .projects { padding: 4rem 2rem 8rem; }
+
+    .projects-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 1.5rem;
+      margin-top: 3rem;
+    }
+
+    .project-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 2rem;
+      transition: all 0.25s;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .project-card:hover {
+      border-color: rgba(0,212,170,0.4);
+      transform: translateY(-6px);
+      box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+    }
+
+    .project-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+    }
+
+    .project-icon { font-size: 1.8rem; }
+
+    .project-links { display: flex; gap: 0.5rem; }
+
+    .project-link {
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 0.75rem;
+      padding: 0.3rem 0.6rem;
+      border: 1px solid var(--border);
+      border-radius: 2px;
+      transition: all 0.2s;
+    }
+
+    .project-link:hover { color: var(--accent); border-color: var(--accent); }
+
+    .project-title {
+      font-family: 'Syne', sans-serif;
+      font-size: 1.1rem;
+      font-weight: 700;
+    }
+
+    .project-desc {
+      font-size: 0.78rem;
+      color: var(--muted);
+      line-height: 1.7;
+    }
+
+    .project-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.4rem;
+      margin-top: auto;
+    }
+
+    .tag {
+      font-size: 0.65rem;
+      letter-spacing: 0.08em;
+      padding: 0.3rem 0.7rem;
+      border: 1px solid var(--border);
+      border-radius: 2px;
+      color: var(--muted);
+    }
+
+    /* CONTACT */
+    .contact {
+      padding: 4rem 2rem 10rem;
+      text-align: center;
+    }
+
+    .contact-box {
+      max-width: 600px;
+      margin: 3rem auto 0;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 3rem;
+    }
+
+    .contact-box p {
+      font-size: 0.85rem;
+      color: var(--muted);
+      line-height: 1.8;
+      margin-bottom: 2rem;
+    }
+
+    .contact-links {
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    /* FOOTER */
+    footer {
+      position: relative;
+      z-index: 1;
+      text-align: center;
+      padding: 2rem;
+      border-top: 1px solid var(--border);
+      font-size: 0.7rem;
+      color: var(--muted);
+    }
+
+    /* DIVIDER */
+    .divider {
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--border), transparent);
+      margin: 0 2rem;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* SCROLLBAR */
+    ::-webkit-scrollbar { width: 4px; }
+    ::-webkit-scrollbar-track { background: var(--bg); }
+    ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+    ::-webkit-scrollbar-thumb:hover { background: var(--accent); }
+
+    @media (max-width: 768px) {
+      nav { padding: 1rem 1.5rem; }
+      .nav-links { gap: 1rem; }
+      .about-grid { grid-template-columns: 1fr; gap: 2rem; }
+      .contact-box { padding: 2rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav>
+    <div class="nav-logo">// seu-usuario</div>
+    <ul class="nav-links">
+      <li><a href="#about">sobre</a></li>
+      <li><a href="#skills">skills</a></li>
+      <li><a href="#projects">projetos</a></li>
+      <li><a href="#contact">contato</a></li>
+    </ul>
+  </nav>
+
+  <!-- HERO -->
+  <div class="hero">
+    <div class="hero-tag">disponível para oportunidades</div>
+    <h1>
+      Olá, eu sou<br />
+      <span class="highlight">Seu Nome</span>
+    </h1>
+    <p class="hero-desc">
+      Estudante de Engenharia de Software apaixonado por construir soluções através do código.
+      Explorando linguagens, padrões e boas práticas para me tornar um desenvolvedor completo.
+    </p>
+    <div class="hero-cta">
+      <a href="#projects" class="btn btn-primary">→ ver projetos</a>
+      <a href="#contact" class="btn btn-secondary">entrar em contato</a>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- ABOUT -->
+  <section class="about" id="about">
+    <p class="section-label">// 01. sobre mim</p>
+    <h2 class="section-title">Quem sou eu</h2>
+    <div class="about-grid">
+      <div class="about-text">
+        <p>
+          Sou <span>Seu Nome</span>, estudante de <span>Engenharia de Software</span> com foco em desenvolvimento de software e boas práticas de programação.
+        </p>
+        <p>
+          Minha jornada começou com <span>JavaScript e C#</span>, e estou constantemente expandindo meu repertório técnico — desde lógica de programação até arquitetura de sistemas.
+        </p>
+        <p>
+          Acredito que código bem escrito é tão importante quanto código que funciona. Por isso, busco sempre aprender sobre <span>clean code, versionamento e colaboração</span>.
+        </p>
+      </div>
+      <div class="about-stats">
+        <div class="stat-card">
+          <div class="stat-number">2+</div>
+          <div class="stat-label">Linguagens estudadas</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-number">10+</div>
+          <div class="stat-label">Projetos práticos</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-number">100%</div>
+          <div class="stat-label">Comprometimento</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-number">∞</div>
+          <div class="stat-label">Vontade de aprender</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- SKILLS -->
+  <section class="skills" id="skills">
+    <p class="section-label">// 02. habilidades</p>
+    <h2 class="section-title">O que estudo</h2>
+    <div class="skills-grid">
+      <div class="skill-card">
+        <div class="skill-icon">⚡</div>
+        <div class="skill-name">JavaScript</div>
+        <div class="skill-desc">Lógica, manipulação do DOM, exercícios e projetos práticos no console.</div>
+      </div>
+      <div class="skill-card">
+        <div class="skill-icon">🔷</div>
+        <div class="skill-name">C#</div>
+        <div class="skill-desc">Orientação a objetos, estruturas de dados e desenvolvimento de projetos com .NET.</div>
+      </div>
+      <div class="skill-card">
+        <div class="skill-icon">🔧</div>
+        <div class="skill-name">Git & GitHub</div>
+        <div class="skill-desc">Versionamento, boas práticas de commits, branches e colaboração em repositórios.</div>
+      </div>
+      <div class="skill-card">
+        <div class="skill-icon">📐</div>
+        <div class="skill-name">Engenharia de Software</div>
+        <div class="skill-desc">Clean code, padrões de projeto, algoritmos e estruturas de dados.</div>
+      </div>
+      <div class="skill-card">
+        <div class="skill-icon">🌐</div>
+        <div class="skill-name">Web</div>
+        <div class="skill-desc">HTML, CSS e JavaScript para criação de interfaces e páginas web.</div>
+      </div>
+      <div class="skill-card">
+        <div class="skill-icon">📚</div>
+        <div class="skill-name">Em aprendizado</div>
+        <div class="skill-desc">Python, Java, banco de dados e muito mais no horizonte.</div>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- PROJECTS -->
+  <section class="projects" id="projects">
+    <p class="section-label">// 03. projetos</p>
+    <h2 class="section-title">O que construí</h2>
+    <div class="projects-grid">
+
+      <div class="project-card">
+        <div class="project-header">
+          <div class="project-icon">♟️</div>
+          <div class="project-links">
+            <a href="https://github.com/brunovrz33/Code-Lab" class="project-link">GitHub →</a>
+          </div>
+        </div>
+        <div class="project-title">Chess Engine</div>
+        <div class="project-desc">
+          Jogo de xadrez completo rodando no terminal, com todas as regras implementadas e um sistema de timer por jogada adicionado por mim.
+        </div>
+        <div class="project-tags">
+          <span class="tag">C#</span>
+          <span class="tag">.NET</span>
+          <span class="tag">Terminal</span>
+          <span class="tag">OOP</span>
+        </div>
+      </div>
+
+      <div class="project-card">
+        <div class="project-header">
+          <div class="project-icon">🔑</div>
+          <div class="project-links">
+            <a href="https://github.com/brunovrz33/Code-Lab" class="project-link">GitHub →</a>
+          </div>
+        </div>
+        <div class="project-title">Gerador de Senha</div>
+        <div class="project-desc">
+          Gerador de senhas aleatórias com configurações de comprimento e tipos de caracteres, desenvolvido em JavaScript.
+        </div>
+        <div class="project-tags">
+          <span class="tag">JavaScript</span>
+          <span class="tag">Console</span>
+        </div>
+      </div>
+
+      <div class="project-card">
+        <div class="project-header">
+          <div class="project-icon">🎯</div>
+          <div class="project-links">
+            <a href="https://github.com/brunovrz33/Code-Lab" class="project-link">GitHub →</a>
+          </div>
+        </div>
+        <div class="project-title">Jogo da Adivinhação</div>
+        <div class="project-desc">
+          Jogo interativo no console onde o usuário tenta adivinhar um número gerado aleatoriamente, com dicas de maior ou menor.
+        </div>
+        <div class="project-tags">
+          <span class="tag">JavaScript</span>
+          <span class="tag">Lógica</span>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- CONTACT -->
+  <section class="contact" id="contact">
+    <p class="section-label">// 04. contato</p>
+    <h2 class="section-title">Vamos conversar</h2>
+    <div class="contact-box">
+      <p>
+        Estou sempre aberto para trocar ideias, colaborar em projetos ou simplesmente conectar com pessoas da área.
+        Não hesite em entrar em contato!
+      </p>
+      <div class="contact-links">
+        <a href="https://github.com/brunovrz33" class="btn btn-primary" target="_blank">→ GitHub</a>
+        <a href="https://linkedin.com/in/seu-linkedin" class="btn btn-secondary" target="_blank">LinkedIn</a>
+        <a href="mailto:seuemail@email.com" class="btn btn-secondary">Email</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <p>Desenvolvido por <span style="color: var(--accent)">Seu Nome</span> · 2026</p>
+  </footer>
+
+</body>
+</html>
